@@ -130,7 +130,7 @@ class BasePublishService(BaseService):
                 self._refresh_associated_items(original)
                 self._publish_associations(original, id)
                 updated = deepcopy(original)
-                updated.update(updates)
+                updated.update(deepcopy(updates))
 
                 if updates.get('associations'):
                     self._refresh_associated_items(updated)  # updates got lost with update
