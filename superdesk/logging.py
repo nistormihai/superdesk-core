@@ -35,6 +35,11 @@ def configure_logging(file_path):
 
     :param str file_path:
     """
+    logging.getLogger('apps').setLevel(logging.INFO)
+    logging.getLogger('superdesk').setLevel(logging.INFO)
+    logging.getLogger('elasticsearch').setLevel(logging.WARNING)
+    logging.getLogger('superdesk.websockets_comms').setLevel(logging.WARNING)
+
     if not file_path:
         return
 

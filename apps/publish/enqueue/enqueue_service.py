@@ -34,7 +34,7 @@ from apps.packages.package_service import PackageService
 from apps.publish.published_item import PUBLISH_STATE, QUEUE_STATE
 from superdesk.publish.publish_queue import PUBLISHED_IN_PACKAGE
 
-logger = logging.getLogger('superdesk')
+logger = logging.getLogger(__name__)
 
 
 class EnqueueService:
@@ -280,8 +280,10 @@ class EnqueueService:
         :param package: Package to be published
         :param target_subscribers: List of subscriber and items-per-subscriber
         """
+        logger.info('publish package %s to %s' % (package.get('guid'), target_subscribers))
         all_items = self.package_service.get_residrefs(package)
         no_formatters, queued = [], False
+
         for items in target_subscribers.values():
             updated = deepcopy(package)
             subscriber = items['subscriber']
@@ -296,6 +298,10 @@ class EnqueueService:
                     return
             for key in wanted_items:
                 self.package_service.replace_ref_in_package(updated, key, items['items'][key])
+
+            logger.info('wanted', wanted_items)
+            logger.info('unwanted', unwanted_items)
+            logger.info('final', updated)
 
             formatters, temp_queued = self.queue_transmission(updated, [subscriber],
                                                               {subscriber[config.ID_FIELD]: codes})
