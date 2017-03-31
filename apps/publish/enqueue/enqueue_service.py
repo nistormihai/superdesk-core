@@ -280,7 +280,6 @@ class EnqueueService:
         :param package: Package to be published
         :param target_subscribers: List of subscriber and items-per-subscriber
         """
-        logger.info('publish package %s to %s' % (package.get('guid'), target_subscribers))
         all_items = self.package_service.get_residrefs(package)
         no_formatters, queued = [], False
 
@@ -290,6 +289,9 @@ class EnqueueService:
             codes = items['codes']
             wanted_items = [item for item in items['items'] if items['items'].get(item, None)]
             unwanted_items = [item for item in all_items if item not in wanted_items]
+            # quick fix for ansa
+            wanted_items += unwanted_items
+            unwanted_items = []
             for i in unwanted_items:
                 still_items_left = self.package_service.remove_ref_from_inmem_package(updated, i)
                 if not still_items_left and self.publish_type != 'correct':
@@ -298,10 +300,6 @@ class EnqueueService:
                     return
             for key in wanted_items:
                 self.package_service.replace_ref_in_package(updated, key, items['items'][key])
-
-            logger.info('wanted', wanted_items)
-            logger.info('unwanted', unwanted_items)
-            logger.info('final', updated)
 
             formatters, temp_queued = self.queue_transmission(updated, [subscriber],
                                                               {subscriber[config.ID_FIELD]: codes})
