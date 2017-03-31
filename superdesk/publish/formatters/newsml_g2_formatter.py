@@ -461,8 +461,9 @@ class NewsMLG2Formatter(Formatter):
         """
         groupSet = SubElement(item, 'groupSet', attrib={'root': 'root'})
         for group in article.get(GROUPS, []):
-            group_Elem = SubElement(groupSet, 'group', attrib={'id': group.get(GROUP_ID),
-                                                               'role': group.get(ROLE)})
+            attrib = {'id': group.get(GROUP_ID),
+                      'role': group.get(ROLE, 'grpRole:%s' % group.get(GROUP_ID))}
+            group_Elem = SubElement(groupSet, 'group', attrib=attrib)
             for ref in group.get(REFS, []):
                 if ID_REF in ref:
                     SubElement(group_Elem, 'groupRef', attrib={'idref': ref.get(ID_REF)})

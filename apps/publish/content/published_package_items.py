@@ -111,5 +111,5 @@ class PublishedPackageItemsService(BaseService):
         for group_meta in groups:
             if group_meta.get(GROUP_ID) == ROOT_GROUP:
                 root_refs = [ref[ID_REF] for ref in group_meta[REFS]]
-            if not group in root_refs:
-                group_meta[REFS].append({ID_REF: group})
+                if not group in root_refs:
+                    group_meta[REFS].append({ID_REF: group})

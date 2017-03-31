@@ -19,6 +19,11 @@ from superdesk.utc import utcnow
 from superdesk.publish.formatters import NewsMLG2Formatter
 
 
+def ns(key):
+    tokens = key.split('/')
+    return '/'.join(['{http://iptc.org/std/nar/2006-10-01/}%s' % token for token in tokens])
+
+
 @mock.patch('superdesk.publish.subscribers.SubscribersService.generate_sequence_number', lambda self, subscriber: 1)
 class NewsMLG2FormatterTest(TestCase):
     embargo_ts = (utcnow() + datetime.timedelta(days=2))
@@ -83,6 +88,9 @@ class NewsMLG2FormatterTest(TestCase):
                 'refs': [
                     {
                         'idRef': 'main'
+                    },
+                    {
+                        'idRef': 'sidebar'
                     }
                 ]
             },
@@ -99,6 +107,17 @@ class NewsMLG2FormatterTest(TestCase):
                         'location': 'archive',
                         'headline': 'US:US cop sacked over student shooting',
                         'slugline': 'US Police'
+                    }
+                ]
+            },
+            {
+                'id': 'sidebar',
+                'refs': [
+                    {
+                        'type': 'text',
+                        'itemClass': 'icls:text',
+                        'headline': 'Sidebar',
+                        'location': 'archive'
                     }
                 ]
             }
@@ -739,6 +758,10 @@ class NewsMLG2FormatterTest(TestCase):
         self.assertEqual(xml.find(
             '{http://iptc.org/std/nar/2006-10-01/}header/{http://iptc.org/std/nar/2006-10-01/}priority').text,
             '5')
+
+        groups = xml.findall(ns('itemSet/packageItem/groupSet/group'))
+        self.assertEqual(3, len(groups))
+
         self.assertEqual(xml.find(
             '{http://iptc.org/std/nar/2006-10-01/}itemSet/{http://iptc.org/std/nar/2006-10-01/}packageItem/' +
             '{http://iptc.org/std/nar/2006-10-01/}groupSet/{http://iptc.org/std/nar/2006-10-01/}group/' +
