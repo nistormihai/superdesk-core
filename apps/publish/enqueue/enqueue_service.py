@@ -299,7 +299,10 @@ class EnqueueService:
                     # if not correcting then don't send the package
                     return
             for key in wanted_items:
-                self.package_service.replace_ref_in_package(updated, key, items['items'][key])
+                try:
+                    self.package_service.replace_ref_in_package(updated, key, items['items'][key])
+                except KeyError:
+                    continue
 
             formatters, temp_queued = self.queue_transmission(updated, [subscriber],
                                                               {subscriber[config.ID_FIELD]: codes})
