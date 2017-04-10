@@ -25,6 +25,13 @@ class HTMLNewsMLG2Formatter(NewsMLG2Formatter):
             html = etree.HTML('<p></p>')
         return html
 
+    def _format_itemref(self, group, ref, item):
+        itemRef = super()._format_itemref(group, ref, item)
+        if item.get('body_html'):
+            desc = etree.SubElement(itemRef, 'description', attrib={'role': 'drol:teaser'})
+            desc.append(self._build_html_doc(item))
+        return itemRef
+
     def can_format(self, format_type, article):
         """Method check if the article can be formatted to NewsML G2 or not.
 

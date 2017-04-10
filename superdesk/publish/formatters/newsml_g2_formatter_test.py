@@ -762,16 +762,9 @@ class NewsMLG2FormatterTest(TestCase):
         groups = xml.findall(ns('itemSet/packageItem/groupSet/group'))
         self.assertEqual(3, len(groups))
 
-        self.assertEqual(xml.find(
-            '{http://iptc.org/std/nar/2006-10-01/}itemSet/{http://iptc.org/std/nar/2006-10-01/}packageItem/' +
-            '{http://iptc.org/std/nar/2006-10-01/}groupSet/{http://iptc.org/std/nar/2006-10-01/}group/' +
-            '{http://iptc.org/std/nar/2006-10-01/}itemRef/{http://iptc.org/std/nar/2006-10-01/}slugline').text,
-            'slugline')
-        self.assertEqual(xml.find(
-            '{http://iptc.org/std/nar/2006-10-01/}itemSet/{http://iptc.org/std/nar/2006-10-01/}packageItem/' +
-            '{http://iptc.org/std/nar/2006-10-01/}groupSet/{http://iptc.org/std/nar/2006-10-01/}group/' +
-            '{http://iptc.org/std/nar/2006-10-01/}itemRef').get('residref'),
-            'tag:localhost:2015:5838657b-b3ec-4e5a-9b39-36039e16400b')
+        self.assertEqual(xml.find(ns('itemSet/packageItem/groupSet/group/itemRef/slugline')).text, 'slugline')
+        self.assertEqual(xml.find(ns('itemSet/packageItem/groupSet/group/itemRef')).get('residref'),
+                         'tag:localhost:2015:5838657b-b3ec-4e5a-9b39-36039e16400b')
 
     def testPicturePackagePublish(self):
         article = dict(self.picture_package)

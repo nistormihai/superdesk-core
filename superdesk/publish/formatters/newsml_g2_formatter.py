@@ -473,13 +473,16 @@ class NewsMLG2Formatter(Formatter):
                         archive_item = superdesk.get_resource_service(ARCHIVE).find_one(req=None,
                                                                                         _id=ref.get(RESIDREF))
                         if archive_item:
-                            itemRef = SubElement(group_Elem, 'itemRef',
-                                                 attrib={'residref': ref.get(RESIDREF),
-                                                         'contenttype': 'application/vnd.iptc.g2.newsitem+xml'})
-                            SubElement(itemRef, 'itemClass', attrib={'qcode': 'ninat:' + ref.get(ITEM_TYPE, 'text')})
-                            self._format_pubstatus(archive_item, itemRef)
-                            self._format_headline(archive_item, itemRef)
-                            self._format_slugline(archive_item, itemRef)
+                            self._format_itemref(group_Elem, ref, archive_item)
+
+    def _format_itemref(self, group, ref, item):
+        attrib = {'residref': ref.get(RESIDREF), 'contenttype': 'application/vnd.iptc.g2.newsitem+xml'}
+        itemRef = SubElement(group, 'itemRef', attrib=attrib)
+        SubElement(itemRef, 'itemClass', attrib={'qcode': 'ninat:' + ref.get(ITEM_TYPE, 'text')})
+        self._format_pubstatus(item, itemRef)
+        self._format_headline(item, itemRef)
+        self._format_slugline(item, itemRef)
+        return itemRef
 
     def _format_contentset(self, article, item):
         """Constructs the contentSet element in a picture, video and audio newsItem.
