@@ -442,7 +442,8 @@ class NewsMLG2Formatter(Formatter):
         :param article:
         :param content_meta:
         """
-        SubElement(content_meta, 'description', attrib={'role': 'drol:caption'}).text = article.get('description', '')
+        text = article.get('description_text', article.get('description', ''))
+        SubElement(content_meta, 'description', attrib={'role': 'drol:caption'}).text = text
 
     def _format_creditline(self, article, content_meta):
         """Append the creditLine to the contentMeta for a picture
