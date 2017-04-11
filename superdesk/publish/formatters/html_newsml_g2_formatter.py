@@ -30,6 +30,9 @@ class HTMLNewsMLG2Formatter(NewsMLG2Formatter):
         if item.get('body_html'):
             desc = etree.SubElement(itemRef, 'description', attrib={'role': 'drol:teaser'})
             desc.append(self._build_html_doc(item))
+        elif item.get('description_text'):
+            desc = etree.SubElement(itemRef, 'description', attrib={'role': 'drol:caption'})
+            desc.text = item.get('description_text')
         return itemRef
 
     def can_format(self, format_type, article):
